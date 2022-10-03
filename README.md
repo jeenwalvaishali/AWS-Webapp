@@ -16,4 +16,4 @@
 
 # Deploy Instruction
 
-* Run npm start.
+
