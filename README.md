@@ -19,3 +19,6 @@
  * Run npm start
 
 
+# Unit Testing
+  
+  * npm test
