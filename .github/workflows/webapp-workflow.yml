@@ -23,5 +23,4 @@ jobs:
       - run: CI=true npm test
       - run: echo works and pipeline continues
         env:
-          CI: true  
-
+          CI: true
