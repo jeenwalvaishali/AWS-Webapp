@@ -10,8 +10,4 @@ it("Unit test for GET method for Healthz", function(done) {
         expect(200);
         done();
     });
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> 3e2c768 (Test file update)
