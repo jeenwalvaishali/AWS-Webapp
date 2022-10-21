@@ -17,30 +17,22 @@ echo "Install Unzip"
 sudo apt-get install zip unzip -y
 unzip webapp.zip
 
-#Nagivate to webapp from Home
-
 # #npm install
 echo "NPM Install"
 sudo npm install
 
-echo "Copying index.js to Systemd"
+#Copy service file to system
+echo "Copying index.service to Systemd"
 sudo cp /home/ubuntu/index.service /etc/systemd/system/index.service
 
 #Configure Database
 echo "Configuring Mysql"
 sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
-# ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
-# exit
 
+#Restarting the systemd service
 echo "Reload Demon"
 sudo systemctl daemon-reload
-
 echo "Start Systemd"
 sudo systemctl enable index.service
-
 sudo systemctl restart index.service
-
 sudo systemctl start index.service
-
-# #npm run
-# sudo npm start
