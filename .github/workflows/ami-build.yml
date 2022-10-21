@@ -21,7 +21,7 @@ jobs:
     
       - name: build the application artifact 
         run: |
-          zip -r webapp.zip
+          zip -r webapp.zip ./
           pwd ./webapp        
       - name: Use hashicrop Packer
         uses: hashicorp-contrib/setup-packer@v2
