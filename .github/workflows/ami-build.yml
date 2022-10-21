@@ -1,9 +1,12 @@
 name: Run packer build on a template file
 
-on:
-  push:
-    branches:
-        - 'main'
+on: 
+  pull_request:
+    branches: [main]
+# on:
+#   push:
+#     branches:
+#         - 'main'
 jobs:
   packer_build:
     runs-on: ubuntu-latest
