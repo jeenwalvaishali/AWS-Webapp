@@ -1,0 +1,33 @@
+name: Run packer build on a template file
+
+on:
+  push:
+    branches:
+        - 'main'
+jobs:
+  packer_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code from branch
+        uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name : Install dependencies
+        run  : npm install 
+      - name : Run test
+        run  : npm test
+    
+      - name: build the application artifact 
+        run: |
+          zip -r webapp.zip
+          pwd ./webapp        
+      - name: Use hashicrop Packer
+        uses: hashicorp-contrib/setup-packer@v2
+      - name: Validate Packer
+        run: packer validate ami.pkr.hcl
+      - name: Build image from template
+        run: packer build ami.pkr.hcl
+      
+    
