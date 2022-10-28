@@ -6,14 +6,18 @@ env:
   AWS_ACCESS_DEMO_KEY_ID: ${{ secrets.AWS_ACCESS_DEMO_KEY }}
   AWS_SECRET_ACCESS_DEMO_KEY: ${{ secrets.AWS_SECRET_DEMO_KEY }}
 
+# on:
+#   pull_request:
+#     branches: [ main ]
+#     types: [ closed ]
+
 on:
-  pull_request:
-    branches: [ main ]
-    types: [ closed ]
+   pull_request:
+     branches: [main]
 
 jobs:
   packer_build:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: checkout code from branch
