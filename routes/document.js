@@ -12,29 +12,15 @@ const basicAuth = require('basic-auth');
 const mysqlConnect = require("../model/db.js")
 const s3 = new aws.S3();
 
-let uploads3 = new S3Client({
-  region: process.env.REGION,
-  sslEnabled: false,
-  s3ForcePathStyle: true,
-  signatureVersion: 'v4',
-})
-
 aws.config.update({
   region: process.env.REGION,
 });
 
-const upload = multer({
-  storage: multerS3({
-    s3: uploads3,
-    acl: "private",
-    bucket: BUCKETNAME,
-    key: function (req, file, cb) {
-      cb(null, file.originalname);
-    },
-  }),
-});
+var storage = multer.memoryStorage();
+const newUpload = multer({ storage }).single('file');
 
-router.post("/", mBasicAuth.mBasicAuth, upload.single("file"), async (req, res, next) => {
+
+router.post("/", mBasicAuth.mBasicAuth, async (req, res, next) => {
   const doc_id = uuidv4();
   const today = new Date();
   const date =
@@ -54,30 +40,52 @@ router.post("/", mBasicAuth.mBasicAuth, upload.single("file"), async (req, res, 
                   "Message" : "User name not found! Please enter correct username"
               });   
               return;
-          }else{
-              const id = rows[0].id;
-              mysqlConnect.query(`INSERT INTO mysqluserdb.document (doc_id, user_id, name, date_created, s3_bucket_path) 
-            VALUES ('${doc_id}', '${id}', '${req.file.key}', '${date_created}','${req.file.location}')`, (err, rows, fields)=>{
-                if(!err){
-                    res.status(201).send({
-                      "doc_id": doc_id,
-                      "user_id": id,
-                      "name": req.file.key,
-                      "date_created": date_created,
-                      "s3_bucket_path": req.file.location,
-                    });
-                    return;
-                }else{
-                    res.status(400).send({
-                        "Message" : "Email address already exist!"
-                    });
-                    return;
-                }
-            })
-          }
-      }else{
+          }else{  
+                newUpload(req, res, function(err) {
+                    if(req.file == null || req.file == undefined){
+                      return res.status(401).send({
+                        "Message": "Please send the file"
+                      })
+                    }
+                    if (err instanceof multer.MulterError || err)
+                        return res.status(500).json(err);
+               
+                    fileNameParts = req.file.originalname.split('.');
+                    const newFileName = fileNameParts[0]+"-"+doc_id+"."+fileNameParts[1];
+                    const uploadParams = {
+                      Bucket: BUCKETNAME,
+                      Key: newFileName,
+                      ACL: 'public-read',
+                      Body: req.file.buffer
+                    };
+      
+                    s3.upload(uploadParams, (err, data) => {
+                        if (err) res.status(500).json({ error: 'Error -> ' + err });
+                  
+                        const id = rows[0].id;
+                        mysqlConnect.query(`INSERT INTO mysqluserdb.document (doc_id, user_id, name, date_created, s3_bucket_path) VALUES ('${doc_id}', '${id}', '${newFileName}', '${date_created}','${data.Location}')`, (err, rows, fields)=>{
+                            if(!err){
+                                res.status(201).send({
+                                  "doc_id": doc_id,
+                                  "user_id": id,
+                                  "name": newFileName,
+                                  "date_created": date_created,
+                                  "s3_bucket_path": data.Location,
+                                });
+                                return;
+                            }else{
+                                res.status(400).send({
+                                    "Message" : "Email address already exist!"
+                                });
+                            return;
+                          }
+                        })
+                      });
+                });
+              }
+        }else{
           console.log(err);
-      }
+        }
      })
   } catch (error) {
     console.log(error);
@@ -87,6 +95,8 @@ router.post("/", mBasicAuth.mBasicAuth, upload.single("file"), async (req, res, 
     return;
   }
 });
+
+
 
 router.get("/",mBasicAuth.mBasicAuth, async (req, res) => {
   try {

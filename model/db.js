@@ -2,7 +2,7 @@ require("dotenv").config();
 const mysql = require("mysql2");
 const dbConfig = require("../config/db_config.js");
 
-//Creating connection to the database
+//Creating connection to local the database
 // const mysqlConnect = mysql.createConnection({
 //     host: dbConfig.HOST,
 //     user: dbConfig.USER,
