@@ -6,39 +6,29 @@ const { S3Client } = require('@aws-sdk/client-s3');
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const { v4: uuidv4 } = require("uuid");
-const BUCKETNAME = "mys3bucketnew-us-east-1";
+const BUCKETNAME = process.env.S3BUCKETNAME;
 const mBasicAuth = require("../service/docuser_auth.js")
 const basicAuth = require('basic-auth');
 const mysqlConnect = require("../model/db.js")
 const s3 = new aws.S3();
 
-const accessKey = "AKIAY65Q2PV5QESQBIOK";
-const secretKey = "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";
-
-aws.config.update({
-  secretAccessKey: secretKey,
-  accessKeyId: accessKey,
-  region: process.env.REGION,
-});
-
 let uploads3 = new S3Client({
   region: process.env.REGION,
-  credentials: {
-    accessKeyId: accessKey,
-    secretAccessKey: secretKey,
-  },
   sslEnabled: false,
   s3ForcePathStyle: true,
   signatureVersion: 'v4',
 })
 
+aws.config.update({
+  region: process.env.REGION,
+});
+
 const upload = multer({
   storage: multerS3({
     s3: uploads3,
     acl: "private",
-    bucket: "mys3bucketnew-us-east-1",
+    bucket: BUCKETNAME,
     key: function (req, file, cb) {
-      console.log(file);
       cb(null, file.originalname);
     },
   }),
@@ -124,7 +114,7 @@ router.get("/",mBasicAuth.mBasicAuth, async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id",mBasicAuth.mBasicAuth, async (req, res) => {
   try {
     const user =  basicAuth(req);;
     const doc_id = req.params.id;
@@ -141,18 +131,35 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",mBasicAuth.mBasicAuth, async (req, res) => {
   try {
     const doc_id = req.params.id;
-    mysqlConnect.query(`SELECT * FROM mysqluserdb.document WHERE doc_id='${doc_id}'`, async (err, rows)=>{
-      const file_name = rows[0].name;
-      await s3.deleteObject({ Bucket: BUCKETNAME, Key: file_name }).promise();
-      mysqlConnect.query(`DELETE FROM mysqluserdb.document WHERE doc_id='${doc_id}'`, async (err, rows)=>{
-        res.status(204).send("File Deleted Successfully");
+    const user =  basicAuth(req);;
+    mysqlConnect.query(`SELECT id FROM mysqluserdb.account WHERE username='${user.name}'`, async (err, rows)=>{
+      if(rows.length == 0){
+        res.status(401).send({
+            "Message" : "User name not found! Please enter correct username"
+        });   
+        return;
+    }else{
+      const user_id = rows[0].id;
+      mysqlConnect.query(`SELECT * FROM mysqluserdb.document WHERE doc_id='${doc_id}' and user_id='${user_id}'`, async (err, rows)=>{
+        if(rows.length == 0){
+          res.status(401).send({
+            "Message" : "Unauthorized to Delete the Document"
+          });
+        }else{
+          const file_name = rows[0].name;
+          await s3.deleteObject({ Bucket: BUCKETNAME, Key: file_name }).promise();
+          mysqlConnect.query(`DELETE FROM mysqluserdb.document WHERE doc_id='${doc_id}'`, async (err, rows)=>{
+            res.status(204).send("File Deleted Successfully");
+          });
+        }
       });
-    });
-     
+    }
+    });     
   } catch (error) {
+    console.log(error);
     res.status(401).send({
       Message: "Unauthorized",
     });

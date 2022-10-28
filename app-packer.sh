@@ -25,14 +25,14 @@ sudo npm install
 echo "Copying index.service to Systemd"
 sudo cp /home/ubuntu/index.service /etc/systemd/system/index.service
 
-#Configure Database
-echo "Configuring Mysql"
-sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+# #Configure Database
+# echo "Configuring Mysql"
+# sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
 
-#Restarting the systemd service
-echo "Reload Demon"
-sudo systemctl daemon-reload
-echo "Start Systemd"
-sudo systemctl enable index.service
-sudo systemctl restart index.service
-sudo systemctl start index.service
+# #Restarting the systemd service
+# echo "Reload Demon"
+# sudo systemctl daemon-reload
+# echo "Start Systemd"
+# sudo systemctl enable index.service
+# sudo systemctl restart index.service
+# sudo systemctl start index.service

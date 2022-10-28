@@ -1,14 +1,25 @@
+require("dotenv").config();
 const mysql = require("mysql2");
 const dbConfig = require("../config/db_config.js");
 
 //Creating connection to the database
+// const mysqlConnect = mysql.createConnection({
+//     host: dbConfig.HOST,
+//     user: dbConfig.USER,
+//     password: dbConfig.PASSWORD,
+//     //database: dbConfig.DB
+//     port: '3306'
+// });
+
+//Creating connection to the database
 const mysqlConnect = mysql.createConnection({
-    host: dbConfig.HOST,
-    user: dbConfig.USER,
-    password: dbConfig.PASSWORD,
-    //database: dbConfig.DB
+    host: process.env.HOSTNAME,
+    user: process.env.USERNAME,
+    password: process.env.PASSWORD,
     port: '3306'
 });
+
+console.log("Hostname: "+process.env.HOSTNAME);
 
 
 //Opening the MySql connection
