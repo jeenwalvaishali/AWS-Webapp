@@ -24,3 +24,7 @@ jobs:
       - run: echo works and pipeline continues
         env:
           CI: true
+      - name: Use hashicrop Packer
+        uses: hashicorp-contrib/setup-packer@v2
+      - name: Validate Packer
+        run: packer validate ami.pkr.hcl

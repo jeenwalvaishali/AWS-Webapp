@@ -30,7 +30,7 @@ mysqlConnect.connect((err) => {
             if (err) throw err;
             console.log("Database created");
           });
-        mysqlConnect.query("CREATE TABLE IF NOT EXISTS mysqluserdb.account (id VARCHAR(255) NOT NULL, first_name VARCHAR(255) NOT NULL,last_name VARCHAR(255) NOT NULL,password VARCHAR(255) NOT NULL,username VARCHAR(255) NOT NULL,account_created VARCHAR(255) NULL,account_updated VARCHAR(255) NULL,PRIMARY KEY (id))", function (err, result) {
+        mysqlConnect.query("CREATE TABLE IF NOT EXISTS mysqluserdb.account (id VARCHAR(255) NOT NULL, first_name VARCHAR(255) NOT NULL,last_name VARCHAR(255) NOT NULL,password VARCHAR(255) NOT NULL,username VARCHAR(255) NOT NULL,account_created VARCHAR(255) NULL,account_updated VARCHAR(255) NULL,PRIMARY KEY (id),UNIQUE KEY username_UNIQUE (username))", function (err, result) {
             if (err) throw err;
             console.log("Account Table created");
         });
