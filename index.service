@@ -9,6 +9,7 @@ User=ubuntu
 ExecStart=/usr/bin/node /home/ubuntu/index.js
 EnvironmentFile=/home/ubuntu/app.env
 Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target
