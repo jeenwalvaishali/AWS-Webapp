@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const logger = require('../logger.js');
 const {v4 : uuidv4} = require('uuid')
 const mysqlConnect = require("../model/db.js")
 const mBasicAuth = require("../service/basic_auth.js")
@@ -15,6 +16,7 @@ router.post('/', async (req,res)=>{
         const user_firstname = req.body.first_name;
         const user_lastname = req.body.last_name;
         if(user_email == null || user_firstname == null || user_lastname == null || plainPassword==null){
+            logger.info("All Fields Submission Required")
             res.status(400).send({
                 "Message" : "Please submit all the required fields"
             })
@@ -33,6 +35,7 @@ router.post('/', async (req,res)=>{
             mysqlConnect.query(`INSERT INTO mysqluserdb.account (id, first_name, last_name, password, username, account_created, account_updated) 
             VALUES ('${user_id}', '${user_firstname}', '${user_lastname}', '${user_password}','${user_email}', '${account_created}', '${account_updated}')`, (err, rows, fields)=>{
                 if(!err){
+                    logger.info("User Created")
                     res.status(201).send({
                         "id" : user_id,
                         "first_name": user_firstname,
@@ -42,6 +45,7 @@ router.post('/', async (req,res)=>{
                         "account_updated": account_updated
                     });
                 }else{
+                    logger.info("400 Status Email Already exists")
                     res.status(400).send({
                         "Message" : "Email address already exist!"
                     });
@@ -49,6 +53,7 @@ router.post('/', async (req,res)=>{
                 }
             })
         }else{
+            logger.info("401 status Add Vaild Email Adddress")
             res.status(401).send({
                 "Message" : "Please add valid email address"
             });
@@ -57,6 +62,7 @@ router.post('/', async (req,res)=>{
      
     }
     catch(err){
+       logger.info(`Error ${err}`)
        console.log(err)
     }
   
@@ -65,6 +71,7 @@ router.post('/', async (req,res)=>{
 router.get('/:id', mBasicAuth.mBasicAuth, (req,res)=>{
         mysqlConnect.query('SELECT * FROM mysqluserdb.account WHERE id = ?', [req.params.id], (err, rows)=>{
         if(!err){
+            logger.info("200 Get User data")
             res.status(200).send({
                 "id" : rows[0].id,
                 "first_name": rows[0].first_name,
@@ -74,6 +81,7 @@ router.get('/:id', mBasicAuth.mBasicAuth, (req,res)=>{
                 "account_updated": rows[0].account_updated
             });
         }else{
+            logger.info("400 Bad Request")
             res.status(400).send('Bad Request');
         }
     })
@@ -113,13 +121,16 @@ router.put('/:id', mBasicAuth.mBasicAuth, (req,res)=>{
             mysqlConnect.query(`UPDATE mysqluserdb.account SET password='${user_password}', 
             first_name='${user_firstname}', last_name='${user_lastname}', account_updated='${account_updated}' WHERE id='${user_id}'`, (err, rows, fields)=>{
                 if(!err){
+                    logger.info("204 Successfully Data Updated")
                     res.status(204).send('No content');
                 }else{
+                    logger.info("400 Bad Request")
                     res.status(400).send('Bad Request');
                     return;
                 }
             })
         }else{
+            logger.info("400 Bad Request")
             res.status(400).send('Bad Request');
             return;
         }

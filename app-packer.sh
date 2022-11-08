@@ -36,3 +36,20 @@ sudo cp /home/ubuntu/index.service /etc/systemd/system/index.service
 # sudo systemctl enable index.service
 # sudo systemctl restart index.service
 # sudo systemctl start index.service
+
+#Install Cloudwatch Logs Agent
+echo "Install Cloudwatch Logs Agent"
+wget https://s3.us-east-1.amazonaws.com/amazoncloudwatch-agent-us-east-1/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+sudo dpkg -i amazon-cloudwatch-agent.deb
+
+#Copying cloudwatch config file
+echo "Copying cloudwatch config file"
+sudo cp /home/ubuntu/cloudwatch-config.json /opt/
+
+#Command to Configure CloudWatch Agent
+echo "Command to Configure CloudWatch Agent"
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+    -a fetch-config \
+    -m ec2 \
+    -c file:/opt/cloudwatch-config.json \
+    -s
