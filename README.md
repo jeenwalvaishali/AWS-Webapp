@@ -21,4 +21,4 @@
 
 # Unit Testing
   
-  * npm test
+  * Run npm test
