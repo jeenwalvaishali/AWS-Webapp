@@ -24,6 +24,7 @@
   * npm test
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
@@ -31,5 +32,8 @@
 >>>>>>> 2de774e3010785df245fc1383608a01747690ce6
 =======
   #Added New workflow
+=======
+
+>>>>>>> 2de774e (Update README.md)
 
 >>>>>>> adf69c9 (Update README.md)
