@@ -29,6 +29,7 @@
     "request": "^2.88.2",
     "sequelize": "^6.25.3",
     "uuid": "^9.0.0",
-    "winston": "^3.8.2"
+    "winston": "^3.8.2",
+    "winston-aws-cloudwatch": "^3.0.0"
   }
 }

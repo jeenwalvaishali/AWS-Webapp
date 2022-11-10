@@ -9,7 +9,7 @@ User=ubuntu
 ExecStart=/usr/bin/node /home/ubuntu/index.js
 EnvironmentFile=/home/ubuntu/app.env
 
-Restart=on-failure
+Restart=always
 RestartSec=5s
 
 StandardOutput=syslog

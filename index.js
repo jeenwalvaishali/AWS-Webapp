@@ -22,6 +22,8 @@ app.use(bodyParser.json())
 
 
 app.get("/healthz", (req, res) =>{
+    client.increment('Healthy!');
+    logger.info("Healtnz called")
     res.status(200).send({message: "Healthy!"})
 });
 
@@ -29,8 +31,7 @@ app.use('/v1/account/',accountRoute);
 app.use('/v1/documents/',documentRoute);
 
 app.listen(port, () => {
-    logger.info(`Listening on port ${port}`)
-    console.log(`Listening on port ${port}`)
+    logger.info(`Listening on port ${port}`);
 });
 
 module.exports = app;
