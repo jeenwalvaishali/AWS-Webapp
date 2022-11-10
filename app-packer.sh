@@ -25,14 +25,23 @@ sudo npm install
 echo "Copying index.service to Systemd"
 sudo cp /home/ubuntu/index.service /etc/systemd/system/index.service
 
-# #Configure Database
-# echo "Configuring Mysql"
-# sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+#Install Cloudwatch Logs Agent
+echo "Install Cloudwatch Logs Agent"
+wget https://s3.us-east-1.amazonaws.com/amazoncloudwatch-agent-us-east-1/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+sudo dpkg -i amazon-cloudwatch-agent.deb
 
-# #Restarting the systemd service
-# echo "Reload Demon"
-# sudo systemctl daemon-reload
-# echo "Start Systemd"
-# sudo systemctl enable index.service
-# sudo systemctl restart index.service
-# sudo systemctl start index.service
+#Copying cloudwatch config file
+echo "Copying cloudwatch config file"
+sudo cp /home/ubuntu/cloudwatch-config.json /opt/cloudwatch-config.json
+
+sudo mkdir -p /home/ubuntu/webapp/logs
+sudo touch /home/ubuntu/webapp/logs/cyse6225.log
+sudo chmod 775 /home/ubuntu/webapp/cyse6225.log
+
+#Command to Configure CloudWatch Agent
+echo "Command to Configure CloudWatch Agent"
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+    -a fetch-config \
+    -m ec2 \
+    -c file:/opt/cloudwatch-config.json \
+    -s
