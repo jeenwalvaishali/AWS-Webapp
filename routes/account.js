@@ -43,10 +43,11 @@ router.post('/', async (req,res)=>{
         const dateTime = date+'T'+time;
         const account_created = dateTime;
         const account_updated = "";
+        const account_status = "unverified"
         logger.info("Unique email validation");
         if(user_email.match(emailValid)){
-            mysqlConnect.query(`INSERT INTO mysqluserdb.account (id, first_name, last_name, password, username, account_created, account_updated) 
-            VALUES ('${user_id}', '${user_firstname}', '${user_lastname}', '${user_password}','${user_email}', '${account_created}', '${account_updated}')`, async (err, rows, fields)=>{
+            mysqlConnect.query(`INSERT INTO mysqluserdb.account (id, first_name, last_name, password, username, account_created, account_updated, account_status) 
+            VALUES ('${user_id}', '${user_firstname}', '${user_lastname}', '${user_password}','${user_email}', '${account_created}', '${account_updated}', '${account_status}')`, async (err, rows, fields)=>{
                 if(!err){
                     logger.info("New UsserCreated");
                     res.status(201).send({
@@ -59,8 +60,7 @@ router.post('/', async (req,res)=>{
                     });
 
                     const userToken = uuidv4();
-                    const timeToLive = new Date().getTime();
-
+                   
                     var message = {
                         'username' : user_email,
                         'token' : userToken,
