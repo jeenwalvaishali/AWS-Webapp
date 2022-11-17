@@ -5,6 +5,11 @@ const {v4 : uuidv4} = require('uuid')
 const mysqlConnect = require("../model/db.js")
 const mBasicAuth = require("../service/basic_auth.js")
 const bcrypt = require('bcrypt');
+const AWS = require('aws-sdk');
+AWS.config.update({region: 'us-east-1'});
+
+var sns = new AWS.SNS({});
+
 var StatsD = require('node-statsd'),
       client = new StatsD();
 
@@ -41,7 +46,7 @@ router.post('/', async (req,res)=>{
         logger.info("Unique email validation");
         if(user_email.match(emailValid)){
             mysqlConnect.query(`INSERT INTO mysqluserdb.account (id, first_name, last_name, password, username, account_created, account_updated) 
-            VALUES ('${user_id}', '${user_firstname}', '${user_lastname}', '${user_password}','${user_email}', '${account_created}', '${account_updated}')`, (err, rows, fields)=>{
+            VALUES ('${user_id}', '${user_firstname}', '${user_lastname}', '${user_password}','${user_email}', '${account_created}', '${account_updated}')`, async (err, rows, fields)=>{
                 if(!err){
                     logger.info("New UsserCreated");
                     res.status(201).send({
@@ -52,6 +57,31 @@ router.post('/', async (req,res)=>{
                         "account_created": account_created,
                         "account_updated": account_updated
                     });
+
+                    const userToken = uuidv4();
+                    const timeToLive = new Date().getTime();
+
+                    var message = {
+                        'username' : user_email,
+                        'token' : userToken,
+                        'type' : "Information"
+                    };
+
+                    const params = {
+                        Message: JSON.stringify(message), 
+                        TopicArn: 'arn:aws:sns:us-east-1:987729257471:SNSTopicLambda'
+                      };
+
+                    // Create promise and SNS service object
+                    var publishTextPromise = await sns.publish(params).promise();
+
+                    publishTextPromise.then(function(data) {
+                            console.log(`Message ${params.Message} sent to the topic ${params.TopicArn}`);
+                            console.log("MessageID is " + data.MessageId);
+                                }).catch(
+                                    function(err) {
+                                 console.error(err, err.stack);
+                             });  
                 }else{
                     logger.info("Server error");
                     res.status(400).send({
