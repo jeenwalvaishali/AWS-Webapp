@@ -33,7 +33,7 @@ router.get('/',(req,res)=>{
             let experationTime = data.Item.TimeToLive.N;
             let currentTime = new Date().getTime();
             let timeDuration = (experationTime - currentTime)/60000
-            if(timeDuration<5){
+            if(timeDuration>0){
                 const status = 'verified';
                 mysqlConnect.query(`UPDATE mysqluserdb.account SET account_status='${status}'WHERE username='${email}'`, (err, rows, fields)=>{
                 if(!err){
@@ -57,10 +57,6 @@ router.get('/',(req,res)=>{
             }
         }
     })
-
-    res.status(400).send({
-        "Message" : "Unable to verify account"
-    });
 });
 
 module.exports = router;
