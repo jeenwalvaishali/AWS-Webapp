@@ -74,16 +74,10 @@ router.post('/', async (req,res)=>{
 
                     // Create promise and SNS service object
                     var publishTextPromise = await sns.publish(params).promise();
-
-                    publishTextPromise.then(function(data) {
-                            console.log(`Message ${params.Message} sent to the topic ${params.TopicArn}`);
-                            console.log("MessageID is " + data.MessageId);
-                                }).catch(
-                                    function(err) {
-                                 console.error(err, err.stack);
-                             });  
+                    console.log(publishTextPromise);  
                 }else{
                     logger.info("Server error");
+                    logger.info(err);
                     res.status(400).send({
                         "Message" : "Server not started"
                     });
@@ -92,6 +86,7 @@ router.post('/', async (req,res)=>{
             })
         }else{
             logger.info("401 status Add Vaild Email Adddress");
+            logger.info(err);
             res.status(401).send({
                 "Message" : "Please add valid email address"
             });

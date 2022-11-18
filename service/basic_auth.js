@@ -11,7 +11,7 @@ const mBasicAuth = (req , res, next) => {
             });
             return;
         }
-       mysqlConnect.query(`SELECT password, id FROM mysqluserdb.account WHERE username='${user.name}'`, async (err, rows)=>{
+       mysqlConnect.query(`SELECT password, id, account_status FROM mysqluserdb.account WHERE username='${user.name}'`, async (err, rows)=>{
         if(!err){
             if(rows.length == 0){
                 res.status(401).send({
@@ -22,6 +22,12 @@ const mBasicAuth = (req , res, next) => {
                 const password = rows[0].password;
                 const id = rows[0].id;
                 const validPass = await bcrypt.compare(user.pass,password);
+                const accountStatus = rows[0].account_status;
+                if(accountStatus === "unverified"){
+                    res.status(401).send({
+                        "Message" : "Account in Unverified. Please verify your account"
+                    });
+                }
                 if (validPass) {
                     if(id == req.params.id){
                         next();
