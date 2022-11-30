@@ -42,6 +42,13 @@ jobs:
       # - name: Build image from template
       #   run: packer build ami.pkr.hcl
 
+      - name: Configure AWS Credentials 
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_DEMO_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_DEMO_KEY }}
+          aws-region: us-east-1
+
       - name: Create new launch template for autoscaling group
         run: |
           aws ec2 describe-launch-templates --launch-template-names myVpcStack1-launch-template
