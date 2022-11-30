@@ -51,12 +51,17 @@ jobs:
 
       - name: create new launch template
         run: |
-          aws ec2 create-launch-template --launch-template-name my-template-for-auto-scaling --version-description version1 \
-          --launch-template-data file://asg-config.json
+          aws ec2 get-launch-template-data --instance-id i-0ae7be9d319e39084 --query "LaunchTemplateData" >> instance-data.json
+    
 
-      - name: Update the autoscaling group 
+      - name: create new launch template
         run: |
-          aws autoscaling update-auto-scaling-group \
-          --auto-scaling-group-name myVpcStack1-asg \
-          --launch-template LaunchTemplateId=lt-05ccc528b833c3a18,Version='$Latest'   
+          aws ec2 create-launch-template --launch-template-name my-template-for-auto-scaling --version-description version1 \
+          --launch-template-data file://instance-data.json
+
+      # - name: Update the autoscaling group 
+      #   run: |
+      #     aws autoscaling update-auto-scaling-group \
+      #     --auto-scaling-group-name myVpcStack1-asg \
+      #     --launch-template LaunchTemplateId=lt-05ccc528b833c3a18,Version='$Latest'   
       
