@@ -35,12 +35,12 @@ jobs:
         run: |
           zip -r webapp.zip ./
           pwd ./webapp        
-      - name: Use hashicrop Packer
-        uses: hashicorp-contrib/setup-packer@v2
-      - name: Validate Packer
-        run: packer validate ami.pkr.hcl
-      - name: Build image from template
-        run: packer build ami.pkr.hcl
+      # - name: Use hashicrop Packer
+      #   uses: hashicorp-contrib/setup-packer@v2
+      # - name: Validate Packer
+      #   run: packer validate ami.pkr.hcl
+      # - name: Build image from template
+      #   run: packer build ami.pkr.hcl
 
       - name: Create new launch template for autoscaling group
         run: |
