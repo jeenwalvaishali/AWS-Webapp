@@ -49,6 +49,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_DEMO_KEY }}
           aws-region: us-east-1
 
-      - name: Create new launch template for autoscaling group
+      - name: Describe launch template
         run: |
           aws ec2 describe-launch-templates --launch-template-names myVpcStack1-launch-template
+
+      - name: Describe launch template version
+        run: |
+          aws ec2 describe-launch-template-versions --launch-template-id lt-0ee1879db78e518af
