@@ -6,10 +6,14 @@ env:
   AWS_ACCESS_DEMO_KEY_ID: ${{ secrets.AWS_ACCESS_DEMO_KEY }}
   AWS_SECRET_ACCESS_DEMO_KEY: ${{ secrets.AWS_SECRET_DEMO_KEY }}
 
-on:
-  pull_request:
-    branches: [ main ]
-    types: [ closed ]
+# on:
+#   pull_request:
+#     branches: [ main ]
+#     types: [ closed ]
+
+on:  
+  push:   
+    branches: [a-09]    
 
 jobs:
   packer_build:
@@ -37,5 +41,7 @@ jobs:
         run: packer validate ami.pkr.hcl
       - name: Build image from template
         run: packer build ami.pkr.hcl
-      
-    
+
+      - name: Create new launch template for autoscaling group
+        run: |
+          aws ec2 describe-launch-templates --launch-template-names myVpcStack1-launch-template
