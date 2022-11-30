@@ -1,25 +1,19 @@
 {
-    "LaunchTemplateVersions": [
+    "BlockDeviceMappings":[
         {
-            "DefaultVersion": true,
-            "LaunchTemplateData": {
-                "BlockDeviceMappings": [
-                    {
-                        "DeviceName": "/dev/sda1",
-                        "Ebs": {
-                            "Encrypted": true,
-                            "DeleteOnTermination": true,
-                            "VolumeSize": 20,
-                            "VolumeType": "gp3"
-                        }
-                    }
-                ],
-                "ImageId": "ami-04f32d8a8707130bd",
-                "InstanceType": "t2.micro",
-                "KeyName": "aws-01-vaishali"
+            "DeviceName":"/dev/sda1",
+            "Ebs":{
+                "VolumeType":"gp3",
+                "DeleteOnTermination":true,
+                "VolumeSize": 20,
+                "Encrypted":true
             }
         }
-    ]
+    ],
+    "ImageId":"ami-04f32d8a8707130bd",
+    "InstanceType": "t2.micro",
+    "KeyName": "aws-01-vaishali"
+    
 }
 
 
