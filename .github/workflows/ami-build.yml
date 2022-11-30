@@ -53,4 +53,10 @@ jobs:
         run: |
           aws ec2 create-launch-template --launch-template-name my-template-for-auto-scaling --version-description version1 \
           --launch-template-data file://asg-config.json
+
+      - name: Update the autoscaling group 
+        run: |
+          aws autoscaling update-auto-scaling-group \
+          --auto-scaling-group-name myVpcStack1-asg \
+          --launch-template LaunchTemplateId=lt-05ccc528b833c3a18,Version='$Latest'   
       
