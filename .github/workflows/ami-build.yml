@@ -56,7 +56,7 @@ jobs:
 
       - name: create new launch template
         run: |
-          aws ec2 create-launch-template --launch-template-name my-template-for-auto-scaling --version-description version1 \
+          aws ec2 create-launch-template --launch-template-name my-template-for-auto-scaling --version-description version2 \
           --launch-template-data file://instance-data.json
 
       # - name: Update the autoscaling group 
