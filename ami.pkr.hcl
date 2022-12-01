@@ -13,14 +13,24 @@ variable "ssh_username" {
   default = "ubuntu"
 }
 
+// variable "subnet_id" {
+//   type    = string
+//   default = "subnet-00439420f62cbdced"
+// }
+
+// variable "vpc_id" {
+//   type    = string
+//   default = "vpc-029ce2a08ed69ecaf"
+// }
+
 variable "subnet_id" {
   type    = string
-  default = "subnet-00439420f62cbdced"
+  default = "subnet-04d1fdbb8cfb23bd7"
 }
 
 variable "vpc_id" {
   type    = string
-  default = "vpc-029ce2a08ed69ecaf"
+  default = "vpc-02a513cbe271ede39"
 }
 
 variable "aws_access_key" {
