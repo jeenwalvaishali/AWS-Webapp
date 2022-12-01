@@ -57,7 +57,7 @@ jobs:
         run: |
              AMI_ID=`packer build ami.pkr.hcl | tee >(cat 1>&2) | awk 'match($2, /ami-.*/) { print substr($2, RSTART, RLENGTH) }'`
              echo "AMI is ${AMI_ID}";
-             aws ec2 create-launch-template-version --launch-template-name EC2-launch-template \
+             aws --profile admindemo ec2 create-launch-template-version --launch-template-name EC2-launch-template \
              --version-description version2 --source-version 1 --launch-template-data "ImageId=$AMI_ID"
      
       # - name: Update the autoscaling group 
