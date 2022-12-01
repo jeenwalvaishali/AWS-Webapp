@@ -53,16 +53,20 @@ jobs:
         run: packer validate ami.pkr.hcl
 
       - name: Build image from template and create new launch template version
-        # run: packer build ami.pkr.hcl
         run: |
              AMI_ID=`packer build ami.pkr.hcl | tee >(cat 1>&2) | awk 'match($2, /ami-.*/) { print substr($2, RSTART, RLENGTH) }'`
              echo "AMI is ${AMI_ID}";
              aws ec2 create-launch-template-version --launch-template-name EC2-launch-template \
              --version-description version2 --source-version 1 --launch-template-data "ImageId=$AMI_ID"
      
-      # - name: Update the autoscaling group 
-      #   run: |
-      #     aws autoscaling update-auto-scaling-group \
-      #     --auto-scaling-group-name myVpcStack1-asg \
-      #     --launch-template LaunchTemplateId=lt-05ccc528b833c3a18,Version='$Latest'   
+      - name: Update the autoscaling group 
+        run: |
+          aws autoscaling update-auto-scaling-group \
+          --auto-scaling-group-name myVpcStack1-asg \
+          --launch-template LaunchTemplateName=EC2-launch-template,Version='$Latest'
+
+      - name: Refresh instance using autoscale group
+        run: |
+          aws autoscaling start-instance-refresh --auto-scaling-group-name myVpcStack1-asg
+       
       
