@@ -64,13 +64,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_DEMO_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_DEMO_KEY }} 
           aws-region: us-east-1
-          
+
       - name: create new launch template
         run: |
-          if [ ! -z "$AMI_ID" ]; then
-          template='{"ImageId":"%s"}'
-          aws ec2 create-launch-template-version --launch-template-name EC2-launch-template \
-          --version-description version2 --source-version 1 --launch-template-data $(printf "$template" "$AMI_ID")
+            aws ec2 create-launch-template-version --launch-template-name EC2-launch-template \
+            --version-description version2 --source-version 1 --launch-template-data "ImageId=$AMI_ID"
      
       # - name: Update the autoscaling group 
       #   run: |
