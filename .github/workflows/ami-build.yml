@@ -35,12 +35,15 @@ jobs:
         run: |
           zip -r webapp.zip ./
           pwd ./webapp        
-      # - name: Use hashicrop Packer
-      #   uses: hashicorp-contrib/setup-packer@v2
-      # - name: Validate Packer
-      #   run: packer validate ami.pkr.hcl
-      # - name: Build image from template
-      #   run: packer build ami.pkr.hcl
+      - name: Use hashicrop Packer
+        uses: hashicorp-contrib/setup-packer@v2
+      - name: Validate Packer
+        run: packer validate ami.pkr.hcl
+      - name: Build image from template
+        # run: packer build ami.pkr.hcl
+        run: |
+             AMI_ID=`packer build packer.json | tee >(cat 1>&2) | awk 'match($2, /ami-.*/) { print substr($2, RSTART, RLENGTH) }'`
+             echo "AMI is ${AMI_ID}";
 
       - name: Configure AWS Credentials 
         uses: aws-actions/configure-aws-credentials@v1
@@ -49,16 +52,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_DEMO_KEY }}
           aws-region: us-east-1
 
-      - name: create new launch template
-        run: |
-          aws ec2 get-launch-template-data --instance-id i-0ae7be9d319e39084 --query "LaunchTemplateData" >> instance-data.json
-    
-
-      - name: create new launch template
-        run: |
-          aws ec2 create-launch-template --launch-template-name my-template-for-auto-scaling --version-description version2 \
-          --launch-template-data file://instance-data.json
-
+      # - name: create new launch template
+      #   run: |
+      #     if [ ! -z "$AMI_ID" ]; then
+      #     template='{"ImageId":"%s"}'
+      #     aws ec2 create-launch-template-version --launch-template-name EC2-launch-template \
+      #     --version-description version2 --source-version 1 --launch-template-data $(printf "$template" "$AMI_ID")
+     
       # - name: Update the autoscaling group 
       #   run: |
       #     aws autoscaling update-auto-scaling-group \
