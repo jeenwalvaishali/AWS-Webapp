@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 
-app.get("/healthz", (req, res) =>{
+app.get("/health", (req, res) =>{
     client.increment('Healthy!');
     logger.info("Healtnz called")
     res.status(200).send({message: "Healthy!"})
