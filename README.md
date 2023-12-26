@@ -12,25 +12,18 @@ This repository contains the source code and infrastructure configuration for a 
 
 - **Token-based Authentication:**
   Secure user authentication using token-based approach with BCrypt password hashing.
-
 - **AWS Organization Setup:**
   Efficient resource management achieved through the organization setup in AWS.
-
 - **Infrastructure as Code (IaC):**
   Utilized AWS CloudFormation for defining and deploying infrastructure as code.
-
 - **Custom AMIs with Packer:**
   Created custom Amazon Machine Images (AMIs) with Packer, supporting MySQL and PostgreSQL.
-
 - **CI/CD Pipelines with GitHub Actions:**
   Implemented Continuous Integration and Continuous Deployment pipelines using GitHub Actions for automated testing and deployment.
-
 - **Email Verification Flow:**
   Seamless email verification process integrated with DynamoDB, SNS, and Lambda for enhanced user security.
-
 - **Auto-Scaling Policies:**
   Dynamic resource management achieved through auto-scaling policies for efficient scalability.
-
 - **SSL Certificate Implementation:**
   Ensured secure endpoints with SSL certificate implementation for enhanced data protection.
 
